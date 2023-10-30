@@ -1,14 +1,14 @@
 // ConnectUPButton.jsx
 
 import React, { useState } from 'react';
-import { connectLUKSO } from './connect';
+import { lukso } from './connect';
 
 function ConnectUPButton() {
   const [isConnected, setIsConnected] = useState(false);
 
   const connectUP = async () => {
     try {
-      await connectLUKSO();
+      await lukso();
 
       // Check if the user approved the connection
       if (window.ethereum.selectedAddress) {

@@ -1,10 +1,9 @@
 // connect.jsx
 
 import { createEIP1193Provider } from "@web3-onboard/common";
+import { InjectedWalletModule } from "./InjectedWalletModule.jsx";
 
-import { InjectedWalletModule } from "./index.d";
-
-function lukso(): InjectedWalletModule {
+function lukso() {
   return {
     injectedNamespace: "lukso",
     label: "Universal Profiles",
@@ -13,7 +12,7 @@ function lukso(): InjectedWalletModule {
       !!provider && !!provider.isUniversalProfileExtension,
     getInterface: async () => {
       if ("lukso" in window) {
-        const anyWindow: any = window;
+        const anyWindow = window;
 
         return {
           provider: createEIP1193Provider(anyWindow.lukso),
@@ -33,4 +32,4 @@ function lukso(): InjectedWalletModule {
   };
 }
 
-export default lukso;
+export {lukso};

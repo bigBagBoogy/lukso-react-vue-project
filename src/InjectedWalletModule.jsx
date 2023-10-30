@@ -1,4 +1,3 @@
-import { Device, Platform, WalletModule } from "@web3-onboard/common";
 
 /**
  * Define an InjectedWalletModule object in JavaScript.
@@ -10,4 +9,4 @@ const InjectedWalletModule = {
   externalUrl: undefined,
 };
 
-export default InjectedWalletModule;
+export {InjectedWalletModule};
