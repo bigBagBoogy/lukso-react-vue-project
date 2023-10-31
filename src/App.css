@@ -6,10 +6,8 @@
 }
 .parent-container {
   position: relative;
+  
 }
-
-
-
 .logo1 {
   height: 8em;
   position: absolute;
@@ -20,8 +18,7 @@
   z-index: 2;
 }
 
-
-.logo {
+.logo {  /*bear*/
   height: 8em;
   will-change: filter;
   transition: filter 300ms;

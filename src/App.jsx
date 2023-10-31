@@ -3,6 +3,7 @@ import './App.css';
 import logo from './assets/logo.svg';
 import logo1 from './assets/logo-shine.svg';
 import { Lukso } from './connect.jsx';
+import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
 
 function App() {
@@ -14,8 +15,10 @@ function App() {
       <div className="parent-container">   
         <img src={logo1} className="logo1" alt="logo1" />  
         <img src={logo} className="logo" alt="logo" /> 
-        <FetchAssets />  
-      </div>
+        </div>
+        <FetchAssetData /> 
+        <FetchAssets /> 
+      
     </>
   );
 }
