@@ -1,24 +1,23 @@
-// App.jsx
-
-import { useState } from 'react'
-import './App.css'
-import logo from './assets/logo.svg'
-import logo1 from './assets/logo-shine.svg'
-import { ConnectUPButton } from './ConnectUPButton.jsx';
-
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import logo from './assets/logo.svg';
+import logo1 from './assets/logo-shine.svg';
+import { Lukso } from './connect.jsx';
+import { FetchAssets } from './fetchassets.jsx';
 
 function App() {
-
+  
   return (
     <>
-      <ConnectUPButton/>  
-      <h1>Lukso Dapp</h1> 
+      <Lukso />
+      <h1>Lukso Dapp</h1>      
       <div className="parent-container">   
-      <img src={logo1} className="logo1" alt="logo1" />  
-      <img src={logo} className="logo" alt="logo" />      
-      </div>   
+        <img src={logo1} className="logo1" alt="logo1" />  
+        <img src={logo} className="logo" alt="logo" /> 
+        <FetchAssets />  
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

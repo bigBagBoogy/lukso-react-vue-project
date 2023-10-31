@@ -10,14 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@erc725/erc725.js": "^0.20.1",
     "@lukso/lsp-smart-contracts": "^0.12.0-rc.0",
     "@lukso/web3-onboard-config": "^1.0.3",
     "@web3-onboard/core": "^2.21.2",
     "@web3-onboard/injected-wallets": "^2.10.8",
+    "buffer": "^6.0.3",
+    "isomorphic-fetch": "^3.0.0",
+    "node-global": "^1.0.0",
+    "randombytes": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "siwe": "^2.1.4",
-    "web3": "^4.2.1"
+    "web3": "1.10"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

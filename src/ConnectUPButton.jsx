@@ -1,7 +1,6 @@
 // ConnectUPButton.jsx
 
 import React, { useState } from 'react';
-import { lukso } from './connect';
 
 function ConnectUPButton() {
   const [isConnected, setIsConnected] = useState(false);
