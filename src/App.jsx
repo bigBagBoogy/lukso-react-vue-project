@@ -5,6 +5,7 @@ import logo1 from './assets/logo-shine.svg';
 import { Lukso } from './connect.jsx';
 import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
+import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
 
 function App() {
   
@@ -18,7 +19,7 @@ function App() {
         </div>
         <FetchAssetData /> 
         <FetchAssets /> 
-      
+      <FetchAndReadAssetData />
     </>
   );
 }
