@@ -8,8 +8,13 @@ import { FetchAssets } from './fetchassets.jsx';
 import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
 import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
 
-function App() {
-  
+  function App() {
+    const handleSubmit = (lsp3Profile) => {
+      // This function will be called when the form is submitted in LSP3MetadataForm
+      // You can handle the lsp3Profile object here, e.g., send it to the backend.
+      console.log('LSP3 Profile submitted:', lsp3Profile);
+    };
+
   return (
     <>
       <Lukso />

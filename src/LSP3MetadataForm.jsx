@@ -26,7 +26,7 @@ const LSP3MetadataForm = ({ onSubmit }) => {
       const lsp3Profile = buildLSP3Metadata(formData);  
       // Send the LSP3 metadata object to the backend API
       axios
-        .post('/submit-LSP3', lsp3Profile) // Adjust the API endpoint as needed
+        .post('http://localhost:5000/submit-LSP3', lsp3Profile) // Adjust the API endpoint as needed
         .then((response) => {
           console.log('LSP3 metadata submitted:', response.data);
           // You can handle success responses here, e.g., show a success message to the user.
