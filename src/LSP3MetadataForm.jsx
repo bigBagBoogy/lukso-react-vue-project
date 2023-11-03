@@ -36,7 +36,9 @@ const LSP3MetadataForm = ({ onSubmit }) => {
           // Handle errors, e.g., show an error message to the user.
         });
     };
-
+/////////////////////
+/// build LSP3    ///
+/////////////////////
   const buildLSP3Metadata = (formData) => {
     // Implement the logic to construct the LSP3 metadata object from formData
     const lsp3Profile = {
@@ -45,42 +47,110 @@ const LSP3MetadataForm = ({ onSubmit }) => {
       tags: formData.tags.split(',').map((tag) => tag.trim()),
       links: formData.links.split(';').map((link) => {
         const [title, url] = link.split(',').map((item) => item.trim());
+        
         return { title, url };
       }),
       avatarUrl: formData['avatar-url'],
+    }; 
+// for now, we assume we got back the ipfs image url.
+// so in pseudo code: async function getProfileImageUrl('profileImage') {
+// const profileImageUrl = await sendToIpfs('profileImage');
+// return profileImageUrl; }
+
+let production = false;
+
+if (!production) {
+  let width, height;
+  let profileImageUrl = 'https://universalpage.dev/api/ipfs/QmavcM6xYwxdV1iFeMoh4SSMrFnzVMrrpxAAD3Ue78Wjc5';
+   // Create an image element
+   const img = new Image();
+   img.onload = function () {
+     // The image has loaded, and its dimensions are now available
+     width = img.width;
+     height = img.height;
+   };
+  lsp3Profile.profileImage = [
+    {
+      width: width, // Use the actual width
+      height: height, // Use the actual height
+      verificationFunction: 'ipfs',
+      verificationData: '', // You can add verification data here if needed
+      url: profileImageUrl, // Use the URL you get from IPFS
+    }
+  ];
+} else {
+  if (formData['profileImage']) {
+    const img = new Image();
+    img.onload = async function () {
+      const width = img.width;
+      const height = img.height;
+
+      // You need to declare profileImageUrl before using it
+      let profileImageUrl = await getProfileImageUrl(formData['profileImage']);
+      lsp3Profile.profileImage = [
+        {
+          width: width, // Use the actual width
+          height: height, // Use the actual height
+          verificationFunction: 'ipfs',
+          verificationData: '', // You can add verification data here if needed
+          url: profileImageUrl, // Use the URL you get from IPFS
+        }
+      ];
     };
-      // Handle profileImage, nftProfileImage, and backgroundImage
-  const files = ['profileImage', 'backgroundImage'];
-  for (const fileInput of files) {
-    if (formData[fileInput]) {
-      // Handle file upload here
-      // You can use FormData to send the file to the backend
-      const file = formData[fileInput];
-      const formData = new FormData();
-      formData.append('file', file);
-      // Send the formData (images) to the backend using Axios
-      // or to ipfs using web3.storage
-      // Example:
-      // axios.post('/upload-file-endpoint', formData).then((response) => {
-      //   console.log(`Uploaded ${fileInput} successfully: ${response.data}`);
-      // }).catch((error) => {
-      //   console.error(`Error uploading ${fileInput}: ${error}`);
-      // });
+    img.src = URL.createObjectURL(formData['profileImage']);
+  }
+}
+
+
+  if (formData['nftProfileImage']) {
+    lsp3Profile.nftProfileImage = formData['nftProfileImage'];
+  } 
+
+
+  if (!production) {
+    let width, height;
+    let backgroundImageUrl = 'https://universalpage.dev/api/ipfs/QmavcM6xYwxdV1iFeMoh4SSMrFnzVMrrpxAAD3Ue78Wjc5';
+    const img = new Image();
+    img.onload = function () {
+      // The image has loaded, and its dimensions are now available
+      width = img.width;
+      height = img.height;
+    };
+    lsp3Profile.backgroundImage = [
+      {
+        width: width, // Use the actual width
+        height: height, // Use the actual height
+        verificationFunction: 'ipfs',
+        verificationData: '', // You can add verification data here if needed
+        url: backgroundImageUrl, // Use the URL you get from IPFS
+      }
+    ];
+  } else {
+    if (formData['backgroundImage']) {
+      const img = new Image();
+      img.onload = async function () {
+        const width = img.width;
+        const height = img.height;
+  
+        // You need to declare backgroundImageUrl before using it
+        let backgroundImageUrl = await getBackgroundImageUrl(formData['backgroundImage']);
+        lsp3Profile.backgroundImage = [
+          {
+            width: width, // Use the actual width
+            height: height, // Use the actual height
+            verificationFunction: 'ipfs',
+            verificationData: '', // You can add verification data here if needed
+            url: backgroundImageUrl, // Use the URL you get from IPFS
+          }
+        ];
+      };
+      img.src = URL.createObjectURL(formData['backgroundImage']);
     }
   }
-
-  // Handle nftProfileImage (text input)
-  if (formData['nft-profileImage']) {
-    lsp3Profile.nftProfileImage = formData['nft-profileImage'];
-  }
-
   // Now, you can call the onSubmit function with the LSP3 metadata object
   onSubmit(lsp3Profile);
 };
 
-    // Call the onSubmit function with the LSP3 metadata object
-    onSubmit(lsp3Profile);
-  };
   
 
   return (
@@ -131,12 +201,12 @@ const LSP3MetadataForm = ({ onSubmit }) => {
         </div>
   
         <div className="input-container">
-          <label htmlFor="avatar-url">Avatar URL:</label>
+          <label htmlFor="avatarUrl">Avatar URL:</label>
           <input
             type="text"
-            id="avatar-url"
-            name="avatar-url"
-            value={formData['avatar-url']}
+            id="avatarUrl"
+            name="avatarUrl"
+            value={formData['avatarUrl']}
             onChange={handleChange}
           />
         </div>
@@ -155,10 +225,10 @@ const LSP3MetadataForm = ({ onSubmit }) => {
           <label htmlFor="nft-profile-image">NFT Profile Image: *optional</label>
           <input
             type="text"
-            id="nft-profileImage"
-            name="nft-profileImage"
+            id="nftProfileImage"
+            name="nftProfileImage"
             placeholder="paste nft address here"
-            value={formData['nft-profileImage']}
+            value={formData['nftProfileImage']}
             onChange={handleChange}
           />
         </div>

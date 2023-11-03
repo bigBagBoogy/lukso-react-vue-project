@@ -19,7 +19,7 @@ function App() {
         <img src={logo} className="logo" alt="logo" /> 
         </div>
         <h2>Create Universal Group</h2>
-        <LSP3MetadataForm /> {/* onSubmit={createUniversalProfile} */} 
+        <LSP3MetadataForm onSubmit={handleSubmit} /> 
         <FetchAssetData /> 
         <FetchAssets /> 
       <FetchAndReadAssetData />
