@@ -15,6 +15,7 @@
     "@lukso/web3-onboard-config": "^1.0.3",
     "@web3-onboard/core": "^2.21.2",
     "@web3-onboard/injected-wallets": "^2.10.8",
+    "axios": "^1.6.0",
     "buffer": "^6.0.3",
     "isomorphic-fetch": "^3.0.0",
     "node-global": "^1.0.0",
