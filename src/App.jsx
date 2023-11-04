@@ -12,7 +12,7 @@ import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
     const handleSubmit = (lsp3Profile) => {
       // This function will be called when the form is submitted in LSP3MetadataForm
       // You can handle the lsp3Profile object here, e.g., send it to the backend.
-      console.log('LSP3 Profile submitted:', lsp3Profile);
+      // console.log('LSP3 Profile submitted:', lsp3Profile);
     };
 
   return (
