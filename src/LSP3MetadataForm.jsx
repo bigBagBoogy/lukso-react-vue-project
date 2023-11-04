@@ -6,9 +6,9 @@ import axios from 'axios';
 const LSP3MetadataForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    tags: '',
+    description: '',    
     links: '',
+    tags: '',
     avatarUrl: '',
     profileImage: '',
     nftProfileImage: '', 
@@ -20,156 +20,111 @@ const LSP3MetadataForm = ({ onSubmit }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = () => {
-    console.log('Submitted Data:', formData); // temporary logging
+  const handleSubmit = async () => {
+    try {
       // Transform the form data into the LSP3 metadata object
-      const lsp3Profile = buildLSP3Metadata(formData);
-      console.log(lsp3Profile);
-      // const testObject = { name: 'test', };  
+      const lsp3Profile = await buildLSP3Metadata(formData);
+      console.log('LSP3 metadata:', lsp3Profile);
+  
       // Send the LSP3 metadata object to the backend API
-      axios
-        .post('http://localhost:5000/submit-LSP3', lsp3Profile) // Adjust the API endpoint as needed
-        .then((response) => {
-          // console.log('LSP3 metadata submitted:', response.data);
-          console.log('LSP3 metadata submitted');
-          // You can handle success responses here, e.g., show a success message to the user.
-        })
-        .catch((error) => {
-          console.error('Error submitting LSP3 metadata:', error);
-          // Handle errors, e.g., show an error message to the user.
-        });
-    };
+      const response = await axios.post('http://localhost:5000/submit-LSP3', lsp3Profile); // Adjust the API endpoint as needed
+      console.log('LSP3 metadata submitted:', response.data);
+      // You can handle success responses here, e.g., show a success message to the user.
+    } catch (error) {
+      console.error('Error submitting LSP3 metadata:', error);
+      // Handle errors, e.g., show an error message to the user.
+    }
+  };
+  
 /////////////////////
 /// build LSP3    ///
 /////////////////////
-  const buildLSP3Metadata = (formData) => {
-    // Implement the logic to construct the LSP3 metadata object from formData
-    const lsp3Profile = {
-      name: formData.name,
-      description: formData.description,
-      tags: formData.tags.split(',').map((tag) => tag.trim()),
-      links: formData.links.split(';').map((link) => {
-        const [title, url] = link.split(',').map((item) => item.trim());
-        
-        return { title, url };
-      }),
-      avatarUrl: formData['avatarUrl'],
-    }; 
-// for now, we assume we got back the ipfs image url.
-// so in pseudo code: async function getProfileImageUrl('profileImage') {
-// const profileImageUrl = await sendToIpfs('profileImage');
-// return profileImageUrl; }
-
-let production = false;
-
-if (!production) {
-  console.log("not production. fetching image from ipfs");
-
-  let profileImageUrl = 'https://universalpage.dev/api/ipfs/QmavcM6xYwxdV1iFeMoh4SSMrFnzVMrrpxAAD3Ue78Wjc5';
-  
-  // Create an image element
-  const img = new Image();
-  img.onload = function () {
-    // The image has loaded, and its dimensions are now available
-    const width = img.width;
-    const height = img.height;
-
-    // Now, construct the lsp3Profile.profileImage object
-    lsp3Profile.profileImage = [
-      {
-        width: width, // Use the actual width
-        height: height, // Use the actual height
-        verificationFunction: 'ipfs',
-        verificationData: '', // You can add verification data here if needed
-        url: profileImageUrl, // Use the URL you get from IPFS
-      }
-    ];
-    console.log("lsp3Profile:", lsp3Profile.profileImage);
-
-    // Any further logic that depends on the image dimensions can go here.
+const buildLSP3Metadata = async (formData) => {
+  // Implement the logic to construct the LSP3 metadata object from formData
+  const lsp3Profile = {
+    name: formData.name,
+    description: formData.description,    
+    links: formData.links.split(';').map((link) => {
+      const [title, url] = link.split(',').map((item) => item.trim());
+      return { title, url };
+    }),
+    tags: formData.tags.split(',').map((tag) => tag.trim()),
+    avatarUrl: formData['avatarUrl'],
   };
-  // Set the image source to start loading it
-  img.src = profileImageUrl;
 
-} else {
-  if (formData['profileImage']) {
-    const img = new Image();
-    img.onload = async function () {
-      const width = img.width;
-      const height = img.height;
-      console.log("Image dimensions:", width, height);
-
-      // You need to declare profileImageUrl before using it
-      let profileImageUrl = await getProfileImageUrl(formData['profileImage']);
-      lsp3Profile.profileImage = [
-        {
-          width: width, // Use the actual width
-          height: height, // Use the actual height
-          verificationFunction: 'ipfs',
-          verificationData: '', // You can add verification data here if needed
-          url: profileImageUrl, // Use the URL you get from IPFS
-        }
-      ];
-    };
-    img.src = URL.createObjectURL(formData['profileImage']);
-  }
-}
   if (formData['nftProfileImage']) {
     lsp3Profile.nftProfileImage = formData['nftProfileImage'];
-  } 
+  }
 
+  let production = false;
+
+  const loadImage = async (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.width, height: img.height });
+      img.onerror = reject;
+      img.src = url;
+    });
+  };
+
+  // Load profileImage and backgroundImage
   if (!production) {
-    let backgroundImageUrl = 'https://universalpage.dev/api/ipfs/QmavcM6xYwxdV1iFeMoh4SSMrFnzVMrrpxAAD3Ue78Wjc5';
-    
-    // Create an image element
-    const img = new Image();
-    img.onload = function () {
-      // The image has loaded, and its dimensions are now available
-      const width = img.width;
-      const height = img.height;
-  
-      // Now, construct the lsp3Profile.backgroundImage object
-      lsp3Profile.backgroundImage = [
-        {
-          width: width, // Use the actual width
-          height: height, // Use the actual height
-          verificationFunction: 'ipfs',
-          verificationData: '', // You can add verification data here if needed
-          url: backgroundImageUrl, // Use the URL you get from IPFS
-        }
-      ];
-      console.log("lsp3Profile:", lsp3Profile.backgroundImage);
-      // Any further logic that depends on the image dimensions can go here.
-    };
-  
-    // Set the image source to start loading it
-    img.src = backgroundImageUrl;
-  
+    console.log("not production. fetching image from ipfs");
+
+    const profileImageUrl = 'https://universalpage.dev/api/ipfs/QmavcM6xYwxdV1iFeMoh4SSMrFnzVMrrpxAAD3Ue78Wjc5';
+    const backgroundImageUrl = 'https://universalpage.dev/api/ipfs/QmavcM6xYwxdV1iFeMoh4SSMrFnzVMrrpxAAD3Ue78Wjc5';
+
+    const [profileImageDims, backgroundImageDims] = await Promise.all([
+      loadImage(profileImageUrl),
+      loadImage(backgroundImageUrl),
+    ]);
+
+    lsp3Profile.profileImage = [
+      {
+        width: profileImageDims.width,
+        height: profileImageDims.height,
+        verificationFunction: '',
+        verificationData: '', // You can add verification data here if needed
+        url: profileImageUrl,
+      },
+    ];
+
+    lsp3Profile.backgroundImage = [
+      {
+        width: backgroundImageDims.width,
+        height: backgroundImageDims.height,
+        verificationFunction: '',
+        verificationData: '', // You can add verification data here if needed
+        url: backgroundImageUrl,
+      },
+    ];
   } else {
-    if (formData['backgroundImage']) {
+    if (formData['profileImage']) {
       const img = new Image();
       img.onload = async function () {
         const width = img.width;
         const height = img.height;
-  
-        // You need to declare backgroundImageUrl before using it
-        let backgroundImageUrl = await getBackgroundImageUrl(formData['backgroundImage']);
-        lsp3Profile.backgroundImage = [
+        console.log("Image dimensions:", width, height);
+
+        // You need to declare profileImageUrl before using it
+        let profileImageUrl = await getProfileImageUrl(formData['profileImage']);
+        lsp3Profile.profileImage = [
           {
             width: width, // Use the actual width
             height: height, // Use the actual height
-            verificationFunction: 'ipfs',
+            verificationFunction: '',
             verificationData: '', // You can add verification data here if needed
-            url: backgroundImageUrl, // Use the URL you get from IPFS
+            url: profileImageUrl, // Use the URL you get from IPFS
           }
         ];
       };
-      img.src = URL.createObjectURL(formData['backgroundImage']);
+      img.src = URL.createObjectURL(formData['profileImage']);
     }
   }
-  // Now, you can call the onSubmit function with the LSP3 metadata object
-  onSubmit(lsp3Profile);
+  
+  return lsp3Profile; // Return the LSP3 metadata object
 };
+
 
   
 
@@ -199,23 +154,23 @@ if (!production) {
         </div>
   
         <div className="input-container">
-          <label htmlFor="tags">Tags (comma-separated):</label>
-          <input
-            type="text"
-            id="tags"
-            name="tags"
-            value={formData.tags}
-            onChange={handleChange}
-          />
-        </div>
-  
-        <div className="input-container">
           <label htmlFor="links">Links (title,url;title,url):</label>
           <input
             type="text"
             id="links"
             name="links"
             value={formData.links}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="input-container">
+          <label htmlFor="tags">Tags (comma-separated):</label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            value={formData.tags}
             onChange={handleChange}
           />
         </div>
