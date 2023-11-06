@@ -6,7 +6,7 @@ import { Lukso } from './connect.jsx';
 import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
 import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
-import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
+import { LSP3MetadataForm } from './LSP3FEmetaDataFormFE.jsx';
 
   function App() {
     const handleSubmit = (lsp3Profile) => {
@@ -25,9 +25,9 @@ import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
         </div>
         <h2>Create Universal Group</h2>
         <LSP3MetadataForm onSubmit={handleSubmit} /> 
-        <FetchAssetData /> 
+        {/* <FetchAssetData /> 
         <FetchAssets /> 
-      <FetchAndReadAssetData />
+      <FetchAndReadAssetData /> */}
     </>
   );
 }
