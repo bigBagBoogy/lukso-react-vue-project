@@ -5,10 +5,13 @@
   text-align: center;
 }
 .parent-container {
-  position: relative;
+  position: fixed;
+  top: 2%;
+  right: 2%; 
+  z-index: -1;
   
 }
-.logo1 {
+.logo1 {  /*window glare*/
   height: 8em;
   position: absolute;
   padding: 1.5em;

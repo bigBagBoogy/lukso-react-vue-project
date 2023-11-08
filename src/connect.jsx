@@ -1,4 +1,5 @@
-import React from 'react'; // If you're working with React
+import React, { useMemo } from 'react';
+
 import { createEIP1193Provider } from "@web3-onboard/common";
 import Onboard from "@web3-onboard/core";
 import injectedModule from '@web3-onboard/injected-wallets';
@@ -87,12 +88,14 @@ const Lukso = ({ onConnectionChange }) => {
   };
 
   // Initialize Onboard
-  const onboard = Onboard({
+  const onboard = useMemo(() => {
+    return Onboard({
     wallets: [injected], // Injected wallet module
     chains,
     appMetadata,
     connect,
   });
+}, []); // Pass an empty dependency array to ensure it's created once
 
   // Connect the wallet
   const connectWallet = async () => {
