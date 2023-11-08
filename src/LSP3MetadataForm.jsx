@@ -21,6 +21,7 @@ const LSP3MetadataForm = ({ onSubmit }) => {
   };
 
   const handleSubmit = async () => {
+    if (typeof ethereum !== 'undefined') {
     try {
       // Transform the form data into the LSP3 metadata object
       const lsp3Profile = await buildLSP3Metadata(formData);
@@ -34,6 +35,10 @@ const LSP3MetadataForm = ({ onSubmit }) => {
       console.error('Error submitting LSP3 metadata:', error);
       // Handle errors, e.g., show an error message to the user.
     }
+  } else {
+    // UP extension is not connected
+    console.error('Please connect to the UP browser extension.');
+  }
   };
   
 /////////////////////

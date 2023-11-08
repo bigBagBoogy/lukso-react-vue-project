@@ -6,7 +6,7 @@ import { Lukso } from './connect.jsx';
 import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
 import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
-import { LSP3MetadataForm } from './LSP3FEmetaDataFormFE.jsx';
+import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
 
   function App() {
     const handleSubmit = (lsp3Profile) => {

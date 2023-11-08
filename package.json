@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "browserslist": "> 0.25%, not dead",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,13 +18,17 @@
     "@web3-onboard/core": "^2.21.2",
     "@web3-onboard/injected-wallets": "^2.10.8",
     "axios": "^1.6.0",
+    "browserify-fs": "^1.0.0",
     "buffer": "^6.0.3",
+    "core-js": "^3.33.2",
     "isomorphic-fetch": "^3.0.0",
     "node-global": "^1.0.0",
     "randombytes": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "siwe": "^2.1.4",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "web3": "1.10"
   },
   "devDependencies": {
