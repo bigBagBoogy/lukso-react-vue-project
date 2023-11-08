@@ -3,7 +3,7 @@ import { createEIP1193Provider } from "@web3-onboard/common";
 import Onboard from "@web3-onboard/core";
 import injectedModule from '@web3-onboard/injected-wallets';
 
-const Lukso = () => {
+const Lukso = ({ onConnectionChange }) => {
   // Define the Lukso wallet module
   const lukso = {
     injectedNamespace: "lukso",
@@ -96,11 +96,18 @@ const Lukso = () => {
 
   // Connect the wallet
   const connectWallet = async () => {
-    const connectedWallets = await onboard.connectWallet();
-    console.log(connectedWallets);
+    try {
+      const connectedWallets = await onboard.connectWallet();
+      console.log('Connected wallets:', connectedWallets);
+  
+      // Check for the 'Universal Profiles' wallet by label
+      onConnectionChange(connectedWallets.some(wallet => wallet.label === 'Universal Profiles'));
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
   };
+  
 
-  // Render your UI here, and call the connectWallet function as needed
 
   return (
     <div>
