@@ -10,6 +10,7 @@ import { FetchAssets } from './fetchassets.jsx';
 import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
 import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
 import { CheckUPConnection } from './checkUPConnection'; 
+import { FetchProfile } from './fetch-profile.jsx';
 
 
 
@@ -52,8 +53,9 @@ import { CheckUPConnection } from './checkUPConnection';
         <h2>Create Universal Group</h2>
         <LSP3MetadataForm onSubmit={handleSubmit} /> 
         {/* <FetchAssetData /> 
-        <FetchAssets /> 
-      <FetchAndReadAssetData /> */}
+        <FetchAssets />  */}
+        <FetchProfile />
+      {/* <FetchAndReadAssetData /> */}
     </>
   );
 }
