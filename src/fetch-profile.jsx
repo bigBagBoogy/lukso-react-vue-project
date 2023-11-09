@@ -10,7 +10,7 @@ const FetchProfile = () => {
         const response = await fetch(
           `http://localhost:5000/fetch-profile/${address}`
         );
-
+        
         console.log("Response Status:", response.status);
 
         if (!response.ok) {
@@ -21,10 +21,24 @@ const FetchProfile = () => {
         console.log("Full Response from backend:", result);
 
         setData(result);
+        ///// continue here Maarten! ///////
+        const ipfsUrl = "https://universalpage.dev/api/ipfs/" + JSON.stringify(data.profileData.profileData[1]?.value.url).replace(/["']/g, "").replace("ipfs://", "");
+        fetch(ipfsUrl)
+          .then(response => response.json())
+          .then(ipfsProfile => {
+    // Access elements of the JSON object here
+         console.log(ipfsProfile);
+         console.log('name:', ipfsProfile.LSP3Profile.name);
+         console.log('description 2:', ipfsProfile.LSP3Profile.description);
+    // Continue with your code
+  })
+  .catch(error => console.error('Error fetching ipfsProfile:', error));
+  ///////////  end   end    end   ///////////////
 
       } catch (error) {
         console.error("Error fetching profile from backend:", error);
       }
+  
     }
 
     // Call the function to fetch the data when the component mounts
