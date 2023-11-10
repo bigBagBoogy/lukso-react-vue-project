@@ -1,11 +1,15 @@
-import React, { useMemo } from 'react';
-
+// connect.jsx
+import React, { useMemo, useState } from 'react';
 import { createEIP1193Provider } from "@web3-onboard/common";
 import Onboard from "@web3-onboard/core";
 import injectedModule from '@web3-onboard/injected-wallets';
+import { FetchProfile } from './fetch-profile';
+import { fetchProfileFromBackend } from './fetch-profile';
 
-const Lukso = ({ onConnectionChange }) => {
+const Lukso = ({ onConnectionChange, setConnectionData }) => {
   // Define the Lukso wallet module
+  const [userAddress, setUserAddress] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
   const lukso = {
     injectedNamespace: "lukso",
     label: "Universal Profiles",
@@ -102,22 +106,43 @@ const Lukso = ({ onConnectionChange }) => {
     try {
       const connectedWallets = await onboard.connectWallet();
       console.log('Connected wallets:', connectedWallets);
-      console.log('user address:',  connectedWallets[0].accounts[0].address);
+      console.log('user address:', connectedWallets[0]?.accounts[0]?.address);
+      const address = connectedWallets[0]?.accounts[0]?.address;
   
       // Check for the 'Universal Profiles' wallet by label
-      onConnectionChange(connectedWallets.some(wallet => wallet.label === 'Universal Profiles'));
+      onConnectionChange(
+        connectedWallets.some(wallet => wallet.label === 'Universal Profiles'),
+        address
+      );
+  
+      // If the userAddress is available, call fetchProfileFromBackend
+      if (address) {
+        setIsConnected(true);
+        setConnectionData((prevData) => ({
+          ...prevData,
+          userAddress: address,
+        }));
+        await fetchProfileFromBackend(address);
+      }
     } catch (error) {
       console.error('Error connecting wallet:', error);
     }
   };
   
-
+ 
+  const getUserAddress = () => {
+    console.log("userAddress:", userAddress);
+    return userAddress;
+  };
 
   return (
     <div>
-      <button onClick={connectWallet}>Connect Wallet</button>
+          <button onClick={connectWallet}>Connect Wallet</button>
+      {/* Conditionally render FetchProfile based on isConnected */}
+      {isConnected && <FetchProfile userAddress={userAddress} />}
     </div>
   );
 };
 
-export {Lukso};
+export { Lukso };
+

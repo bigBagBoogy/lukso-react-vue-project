@@ -1,49 +1,55 @@
+// fetch-profile.jsx
 import React, { useState, useEffect } from "react";
+// import { getUserAddress } from './connect';
+
+async function fetchProfileFromBackend(userAddress) {
+  try {
+    // const address = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
+    // const address = "0x163CF6D68Fb7287e032Eb7d1a797E737174985c1"; // Heavy metal Group
+    // const address = "0x3F0350EaFc25Cc9185a77394B7E2440ec002e466"; // my UP
+    console.log("userAddress:", userAddress);
+    const response = await fetch(
+      `http://localhost:5000/fetch-profile/${userAddress}`
+    );
+    
+    console.log("Response Status:", response.status);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const returnedProfileObject = await response.json();
+    console.log("Full Response from backend:", returnedProfileObject);
+
+    setData(returnedProfileObject);
+    ///// continue here Maarten! ///////
+    const ipfsUrl = "https://universalpage.dev/api/ipfs/" + JSON.stringify(returnedProfileObject.profileData.profileData[1]?.value.url).replace(/["']/g, "").replace("ipfs://", "");
+    fetch(ipfsUrl)
+      .then(response => response.json())
+      .then(ipfsProfile => {
+// Access elements of the JSON object here
+     console.log(ipfsProfile);
+     console.log('name:', ipfsProfile.LSP3Profile.name);
+     console.log('description 2:', ipfsProfile.LSP3Profile.description);
+// Continue with your code
+})
+.catch(error => console.error('Error fetching ipfsProfile:', error));
+///////////  end   end    end   ///////////////
+
+  } catch (error) {
+    console.error("Error fetching profile from backend:", error);
+  }
+
+}
+
 
 const FetchProfile = () => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    async function fetchProfileFromBackend() {
-      try {
-        // const address = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
-        const address = "0x163CF6D68Fb7287e032Eb7d1a797E737174985c1"; // Heavy metal Group
-        const response = await fetch(
-          `http://localhost:5000/fetch-profile/${address}`
-        );
-        
-        console.log("Response Status:", response.status);
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const returnedProfileObject = await response.json();
-        console.log("Full Response from backend:", returnedProfileObject);
-
-        setData(returnedProfileObject);
-        ///// continue here Maarten! ///////
-        const ipfsUrl = "https://universalpage.dev/api/ipfs/" + JSON.stringify(returnedProfileObject.profileData.profileData[1]?.value.url).replace(/["']/g, "").replace("ipfs://", "");
-        fetch(ipfsUrl)
-          .then(response => response.json())
-          .then(ipfsProfile => {
-    // Access elements of the JSON object here
-         console.log(ipfsProfile);
-         console.log('name:', ipfsProfile.LSP3Profile.name);
-         console.log('description 2:', ipfsProfile.LSP3Profile.description);
-    // Continue with your code
-  })
-  .catch(error => console.error('Error fetching ipfsProfile:', error));
-  ///////////  end   end    end   ///////////////
-
-      } catch (error) {
-        console.error("Error fetching profile from backend:", error);
-      }
-  
-    }
-
+    
     // Call the function to fetch the data when the component mounts
-    fetchProfileFromBackend();
+    
   }, []);
 
   return (
@@ -79,4 +85,4 @@ const FetchProfile = () => {
   );
 };
 
-export { FetchProfile };
+export { FetchProfile, fetchProfileFromBackend };
