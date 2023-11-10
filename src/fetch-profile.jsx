@@ -17,12 +17,12 @@ const FetchProfile = () => {
           throw new Error("Network response was not ok");
         }
 
-        const result = await response.json();
-        console.log("Full Response from backend:", result);
+        const returnedProfileObject = await response.json();
+        console.log("Full Response from backend:", returnedProfileObject);
 
-        setData(result);
+        setData(returnedProfileObject);
         ///// continue here Maarten! ///////
-        const ipfsUrl = "https://universalpage.dev/api/ipfs/" + JSON.stringify(data.profileData.profileData[1]?.value.url).replace(/["']/g, "").replace("ipfs://", "");
+        const ipfsUrl = "https://universalpage.dev/api/ipfs/" + JSON.stringify(returnedProfileObject.profileData.profileData[1]?.value.url).replace(/["']/g, "").replace("ipfs://", "");
         fetch(ipfsUrl)
           .then(response => response.json())
           .then(ipfsProfile => {
