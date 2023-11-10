@@ -6,7 +6,8 @@ const FetchProfile = () => {
   useEffect(() => {
     async function fetchProfileFromBackend() {
       try {
-        const address = "0x9139def55c73c12bcda9c44f12326686e3948634";
+        // const address = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
+        const address = "0x163CF6D68Fb7287e032Eb7d1a797E737174985c1"; // Heavy metal Group
         const response = await fetch(
           `http://localhost:5000/fetch-profile/${address}`
         );

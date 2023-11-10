@@ -102,6 +102,7 @@ const Lukso = ({ onConnectionChange }) => {
     try {
       const connectedWallets = await onboard.connectWallet();
       console.log('Connected wallets:', connectedWallets);
+      console.log('user address:',  connectedWallets[0].accounts[0].address);
   
       // Check for the 'Universal Profiles' wallet by label
       onConnectionChange(connectedWallets.some(wallet => wallet.label === 'Universal Profiles'));
