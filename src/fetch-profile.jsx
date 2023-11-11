@@ -1,12 +1,9 @@
 // fetch-profile.jsx
 import React, { useState, useEffect } from "react";
-// import { getUserAddress } from './connect';
 
-async function fetchProfileFromBackend(userAddress) {
+async function fetchProfileFromBackend(userAddress, setData) {
   try {
-    // const address = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
-    // const address = "0x163CF6D68Fb7287e032Eb7d1a797E737174985c1"; // Heavy metal Group
-    // const address = "0x3F0350EaFc25Cc9185a77394B7E2440ec002e466"; // my UP
+   
     console.log("userAddress:", userAddress);
     const response = await fetch(
       `http://localhost:5000/fetch-profile/${userAddress}`
@@ -43,14 +40,23 @@ async function fetchProfileFromBackend(userAddress) {
 }
 
 
-const FetchProfile = () => {
-  const [data, setData] = useState(null);
 
-  useEffect(() => {
-    
-    // Call the function to fetch the data when the component mounts
-    
-  }, []);
+  const FetchProfile = () => {
+    const [data, setData] = useState(null);
+    const userAddress = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
+  
+    useEffect(() => {
+      const fetchProfile = async () => {
+        try {
+          await fetchProfileFromBackend(userAddress, setData);
+        } catch (error) {
+          console.error('Error fetching data from backend:', error);
+        }
+      };  
+      
+      fetchProfile(); // Call the function when the component mounts
+    }, [userAddress, setData]); // Include userAddress and setData in the dependency array if they might change
+  
 
   return (
     <div>
