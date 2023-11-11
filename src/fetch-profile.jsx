@@ -15,7 +15,7 @@ async function fetchProfileFromBackend(userAddress, setData) {
     const returnedProfileObject = await response.json();
     console.log("Full Response from backend:", returnedProfileObject);
 
-    setData(returnedProfileObject);
+    
     // constructing ipfs url
     const ipfsUrl = "https://universalpage.dev/api/ipfs/" + JSON.stringify(returnedProfileObject.profileData.profileData[1]?.value.url).replace(/["']/g, "").replace("ipfs://", "");
     fetch(ipfsUrl)
@@ -24,9 +24,11 @@ async function fetchProfileFromBackend(userAddress, setData) {
   // Access elements of the JSON object here
      console.log(ipfsProfile);
      console.log('name:', ipfsProfile.LSP3Profile.name);
-     console.log('description 2:', ipfsProfile.LSP3Profile.description);
-  })
+     console.log('description 2:', ipfsProfile.LSP3Profile.description);     
+  })  
       .catch(error => console.error('Error fetching ipfsProfile:', error));
+
+      return returnedProfileObject;
   } catch (error) {
     console.error("Error fetching profile from backend:", error);
   }
@@ -35,22 +37,24 @@ async function fetchProfileFromBackend(userAddress, setData) {
 
 
 
-  const FetchProfile = () => {
-    const [data, setData] = useState(null);
-    const userAddress = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
-  
-    useEffect(() => {
-      const fetchProfile = async () => {
-        try {
-          await fetchProfileFromBackend(userAddress, setData);
-        } catch (error) {
-          console.error('Error fetching data from backend:', error);
+const FetchProfile = () => {
+  const [data, setData] = useState(null);
+  const userAddress = "0x9139def55c73c12bcda9c44f12326686e3948634"; // lukso example
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const fetchedData = await fetchProfileFromBackend(userAddress, setData);
+        if (fetchedData) {
+          setData(fetchedData);
         }
-      };  
-      
-      fetchProfile(); // Call the function when the component mounts
-    }, [userAddress, setData]); // Include userAddress and setData in the dependency array if they might change
-  
+      } catch (error) {
+        console.error("Error fetching data from backend:", error);
+      }
+    };
+    fetchProfile(); // Call the function when the component mounts
+  }, [userAddress, setData]); 
+
 
   return (
     <div>
