@@ -19,6 +19,11 @@ import { CheckUPConnection } from './checkUPConnection';
       isConnected: false,
       userAddress: null,
     });
+    const [showForm, setShowForm] = useState(false);
+
+    const handleButtonClick = () => {
+      setShowForm(!showForm);
+    };
   
     // Callback function to update the connection status
     const setIsConnected = (status) => {
@@ -40,8 +45,8 @@ import { CheckUPConnection } from './checkUPConnection';
         <img src={logo1} className="logo1" alt="logo1" />  
         <img src={logo} className="logo" alt="logo" /> 
         </div>
-        <h2>Create Universal Group</h2>
-        <LSP3MetadataForm onSubmit={handleSubmit} /> 
+        <button onClick={handleButtonClick}>Create Universal Group</button>
+      {showForm && <LSP3MetadataForm onSubmit={handleSubmit} />} 
         {/* <FetchAssetData /> 
         <FetchAssets />  */}
  <Lukso onConnectionChange={setIsConnected} setConnectionData={setConnectionData} />        
