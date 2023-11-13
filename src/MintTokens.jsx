@@ -2,35 +2,57 @@
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
 import Web3 from 'web3';
+import {
+  LSPFactory,
+  useWeb3Connection,
+} from '@lukso/lsp-factory.js/build/main/src/lib/index';
+import { ProfileDataForEncoding } from '@lukso/lsp-factory.js/build/main/src/lib/interfaces/lsp3-profile'
+import {
+  DeployedUniversalProfileContracts,
+  LSPFactory,
+  ContractDeploymentOptions,
+  ProfileDataBeforeUpload,
+  ProfileDeploymentOptions,
+} from '@lukso/lsp-factory.js'
 
-const MintTokensComponent = () => {
-  const [mintAmount, setMintAmount] = useState(0);
-  const queryClient = useQueryClient();
+import { UploadOptions } from '@lukso/lsp-factory.js/build/main/src/lib/interfaces/profile-upload-options'
+import { getSelectedNetworkConfig } from '@/helpers/config'
+import {
+  DeployedLSP7DigitalAsset,
+  DigitalAssetDeploymentOptions,
+  LSP7DigitalAssetDeploymentOptions,
+} from '@lukso/lsp-factory.js/build/main/src/lib/interfaces/digital-asset-deployment'
+import useWeb3Connection from './useWeb3Connection'
 
-  const mintTokens = async () => {
-    const contractAddress = '0x0D1E3AaA7fD58347bCC8dAD6875f3B377Ab3C13f'; 
-    const privateKey = process.env.MY_PRIVATE_KEY; 
-    const web3 = new Web3('https://rpc.testnet.lukso.network'); 
-    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
 
-    // Replace 'EventTicketsNFTAbi' with the actual ABI or import it from a file
-    const EventTicketsNFTAbi = [...]; // Your ABI array
+let lspFactory;
 
-    const contract = new web3.eth.Contract(EventTicketsNFTAbi, contractAddress);
+const { getProvider } = useWeb3Connection();
 
-    try {
-      // Replace 'mint' with the actual minting function in your smart contract
-      const gas = await contract.methods.mint(account.address, mintAmount, true, 'Minting tokens').estimateGas();
-      const tx = await contract.methods.mint(account.address, mintAmount, true, 'Minting tokens').send({ gas });
+const setupLSPFactory = () => {
+  const provider = getProvider();
+  lspFactory = new LSPFactory(provider, {
+    chainId: getSelectedNetworkConfig().chainId,
+  });
+};
 
-      // Invalidate query to refetch contract state
-      queryClient.invalidateQueries(['contractState']); // Replace with the actual query key
 
-      console.log(`Tokens minted successfully! Transaction hash: ${tx.transactionHash}`);
-    } catch (error) {
-      console.error('Minting failed:', error.message);
-    }
-  };
+const deployLSP7DigitalAsset = async (digitalAssetDeploymentOptions) => {
+  return await lspFactory.LSP7DigitalAsset.deploy(digitalAssetDeploymentOptions);
+};
+
+export function useLspFactory() {
+  const hasExtension = !!getProvider();
+  if (!hasExtension) {
+    throw new Error('Extension not installed');
+  }
+  setupLSPFactory();
+
+  return {    
+    deployLSP7DigitalAsset,
+     };
+
+
 
   return (
     <div>
