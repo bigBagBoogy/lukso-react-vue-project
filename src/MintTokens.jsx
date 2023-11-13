@@ -1,72 +1,42 @@
-// MintTokensComponent.jsx
-import { useState } from 'react';
-import { useQueryClient } from 'react-query';
-import Web3 from 'web3';
-import {
-  LSPFactory,
-  useWeb3Connection,
-} from '@lukso/lsp-factory.js/build/main/src/lib/index';
-import { ProfileDataForEncoding } from '@lukso/lsp-factory.js/build/main/src/lib/interfaces/lsp3-profile'
-import {
-  DeployedUniversalProfileContracts,
-  LSPFactory,
-  ContractDeploymentOptions,
-  ProfileDataBeforeUpload,
-  ProfileDeploymentOptions,
-} from '@lukso/lsp-factory.js'
+import React, { useState } from 'react';
+import { web3 } from 'web3'; // Make sure 'web3' is properly imported
 
-import { UploadOptions } from '@lukso/lsp-factory.js/build/main/src/lib/interfaces/profile-upload-options'
-import { getSelectedNetworkConfig } from '@/helpers/config'
-import {
-  DeployedLSP7DigitalAsset,
-  DigitalAssetDeploymentOptions,
-  LSP7DigitalAssetDeploymentOptions,
-} from '@lukso/lsp-factory.js/build/main/src/lib/interfaces/digital-asset-deployment'
-import useWeb3Connection from './useWeb3Connection'
+const MintButton = ({ contractAbi, contractBytecode }) => {
+  const [mintingStatus, setMintingStatus] = useState(null);
 
+  const handleMint = async () => {
+    try {
+      // Check if the browser has the necessary web3 object
+      if (!window.web3) {
+        throw new Error('No web3 object found. Make sure Lukso extension is installed.');
+      }
 
-let lspFactory;
+      const accounts = await web3.eth.getAccounts();
+      const deployer = accounts[0];
 
-const { getProvider } = useWeb3Connection();
+      // Replace 'LSP7GroupToken' with the correct contract class
+      const LSP7GroupToken = new web3.eth.Contract(contractAbi);
 
-const setupLSPFactory = () => {
-  const provider = getProvider();
-  lspFactory = new LSPFactory(provider, {
-    chainId: getSelectedNetworkConfig().chainId,
-  });
-};
+      // Deploy the contract
+      const deployedContract = await LSP7GroupToken.deploy({
+        data: contractBytecode,
+        arguments: ['Group-token', 'LGT', deployer],
+      }).send({
+        from: deployer,
+      });
 
-
-const deployLSP7DigitalAsset = async (digitalAssetDeploymentOptions) => {
-  return await lspFactory.LSP7DigitalAsset.deploy(digitalAssetDeploymentOptions);
-};
-
-export function useLspFactory() {
-  const hasExtension = !!getProvider();
-  if (!hasExtension) {
-    throw new Error('Extension not installed');
-  }
-  setupLSPFactory();
-
-  return {    
-    deployLSP7DigitalAsset,
-     };
-
-
+      setMintingStatus(`Contract deployed at address: ${deployedContract.options.address}`);
+    } catch (error) {
+      setMintingStatus(`Error: ${error.message}`);
+    }
+  };
 
   return (
     <div>
-      <label>
-        Mint Amount:
-        <input
-          type="number"
-          value={mintAmount}
-          onChange={(e) => setMintAmount(e.target.value)}
-        />
-      </label>
-      <button onClick={mintTokens}>Mint Tokens</button>
+      <button onClick={handleMint}>Mint Tokens</button>
+      {mintingStatus && <p>{mintingStatus}</p>}
     </div>
   );
 };
 
-export default MintTokensComponent;
+export default MintButton;
