@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
 import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
-import { LSP3MetadataForm } from './LSP3MetadataForm.jsx';
+import { LSP3MetadataForm } from './LSP3FEmetaDataFormFE.jsx';
 import { CheckUPConnection } from './checkUPConnection'; 
 // import { FetchProfile } from './fetch-profile.jsx';
 
@@ -40,18 +40,17 @@ import { CheckUPConnection } from './checkUPConnection';
 
   return (
     <>
-      <h1>Lukso Dapp</h1>      
-      <div className="parent-container">   
+        <h1>Lukso Dapp</h1>      
+        <div className="parent-container">   
         <img src={logo1} className="logo1" alt="logo1" />  
         <img src={logo} className="logo" alt="logo" /> 
         </div>
+        {/* only show the form onClick */}
         <button onClick={handleButtonClick}>Create Universal Group</button>
-      {showForm && <LSP3MetadataForm onSubmit={handleSubmit} />} 
-        {/* <FetchAssetData /> 
-        <FetchAssets />  */}
- <Lukso onConnectionChange={setIsConnected} setConnectionData={setConnectionData} />        
-   
-      {connectionData.isConnected && (
+        {showForm && <LSP3MetadataForm onSubmit={handleSubmit} />} 
+        {/* if connected, show the "go group page button" */}
+        <Lukso onConnectionChange={setIsConnected} setConnectionData={setConnectionData} />        
+        {connectionData.isConnected && (
         <Link to="/UniversalGroup">Go to Group Page</Link>
       )}
     </>

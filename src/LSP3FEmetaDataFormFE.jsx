@@ -1,8 +1,9 @@
 // LSP3FEmetaDataFormFE.jsx
 
 import React, { useState } from 'react';
-import { DeployUP } from './deployUP';
-// import axios from 'axios'; 
+import { createUniversalProfile } from './DeployUPfe';
+import {DeployLSP7Contract} from './LSP7Deploy.jsx';
+
 
 const LSP3MetadataForm = ({ onSubmit }) => {
     
@@ -31,7 +32,7 @@ const LSP3MetadataForm = ({ onSubmit }) => {
       console.log('LSP3 metadata:', myLSP3MetaData);
       console.log("got to here! b")
     // call DeployUP() function
-    await DeployUP(myLSP3MetaData);
+    await createUniversalProfile(myLSP3MetaData);
 
     } catch (error) {
       console.error('Error submitting LSP3 metadata:', error);
@@ -226,6 +227,7 @@ const buildLSP3Metadata = async (formData) => {
         </div>
   
         <button type="button" onClick={handleSubmit}>Submit</button>
+        <DeployLSP7Contract/>
       </form>
     </div>
   );  

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios'; 
+import {DeployLSP7Contract} from './LSP7Deploy.jsx';
 
 const LSP3MetadataForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -224,6 +225,7 @@ const buildLSP3Metadata = async (formData) => {
         </div>
   
         <button type="button" onClick={handleSubmit}>Submit</button>
+        <DeployLSP7Contract/>
       </form>
     </div>
   );  
