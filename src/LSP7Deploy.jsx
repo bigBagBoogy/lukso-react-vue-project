@@ -1,47 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import Web3 from 'web3';
 import LSP7Mintable from './GroupTokens.json';
+import { useWeb3 } from './Web3Context';
 
 const DeployLSP7Contract = () => {
-  const [web3, setWeb3] = useState(null);
+  const { web3, userAddress, setConnectionData } = useWeb3();
   const [contractInstance, setContractInstance] = useState(null);
 
   useEffect(() => {
-    const initializeWeb3 = async () => {
-      // Assuming MetaMask is installed and the user is connected
-      if (window.ethereum) {
-        const web3Instance = new Web3(window.ethereum);
-        console.log('Web3 initialized:', web3Instance);
-        setWeb3(web3Instance);
-      }
-    };
-
-    initializeWeb3();
-  }, []);
+    // Assuming userAddress is a variable in the scope of your component
+    if (userAddress) {
+      // Update connection data using setConnectionData if userAddress is available
+      setConnectionData((prevData) => ({
+        ...prevData,
+        additionalData: 'value', // Add any additional data you need
+      }));
+    }
+  }, [userAddress, setConnectionData]);
+  
 
   const deployContract = async () => {
-    if (!web3) {
-      console.error('Web3 not initialized');
+    if (!web3 || !userAddress) {
+      console.error('Web3 not initialized or userAddress not available');
       return;
     }
 
     const groupTokenName = 'GroupToken';
     const groupTokenSymbol = 'LGT';
-    const accounts = await web3.eth.getAccounts();
-    const owner = accounts[0];
-    console.log('Deploying contract with owner:', owner);
 
     const deployedContract = new web3.eth.Contract(LSP7Mintable.abi);
-    console.log('Contract instance created:', deployedContract);
 
     try {
       const deployedInstance = await deployedContract
         .deploy({
           data: LSP7Mintable.bytecode,
-          arguments: [groupTokenName, groupTokenSymbol, owner],
+          arguments: [groupTokenName, groupTokenSymbol, userAddress],
         })
         .send({
-          from: owner,
+          from: userAddress,
           gas: '4700000', // Adjust the gas limit as needed
         });
 

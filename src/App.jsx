@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './assets/logo.svg';
 import logo1 from './assets/logo-shine.svg';
-import { Lukso } from './connect.jsx';
+import { ConnectUP } from './connect.jsx';
 import { Link } from 'react-router-dom'
 import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
@@ -25,13 +25,16 @@ import { CheckUPConnection } from './checkUPConnection';
       setShowForm(!showForm);
     };
   
-    // Callback function to update the connection status
-    const setIsConnected = (status) => {
-      setConnectionData((prevData) => ({
-        ...prevData,
-        isConnected: status,
-      }));
-    }
+    // Callback function to update the connection status and user address  
+const setIsConnected = (status, userAddress) => {
+  console.log('Connection Status:', status);
+  console.log('User Address:', userAddress);
+  setConnectionData((prevData) => ({
+    ...prevData,
+    isConnected: status,
+    userAddress: userAddress,
+  }));
+};
     const handleSubmit = (lsp3Profile) => {
       // This function will be called when the form is submitted in LSP3MetadataForm
       // You can handle the lsp3Profile object here, e.g., send it to the backend.
@@ -49,7 +52,10 @@ import { CheckUPConnection } from './checkUPConnection';
         <button onClick={handleButtonClick}>Create Universal Group</button>
         {showForm && <LSP3MetadataForm onSubmit={handleSubmit} />} 
         {/* if connected, show the "go group page button" */}
-        <Lukso onConnectionChange={setIsConnected} setConnectionData={setConnectionData} />        
+        <ConnectUP
+        onConnectionChange={(status, userAddress) => setIsConnected(status, userAddress)}
+        setConnectionData={setConnectionData}
+      />        
         {connectionData.isConnected && (
         <Link to="/UniversalGroup">Go to Group Page</Link>
       )}

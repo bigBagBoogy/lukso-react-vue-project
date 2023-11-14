@@ -5,11 +5,12 @@ import Onboard from "@web3-onboard/core";
 import injectedModule from '@web3-onboard/injected-wallets';
 import { FetchProfile } from './fetch-profile';
 import { fetchProfileFromBackend } from './fetch-profile';
+import { useWeb3 } from './Web3Context';
 
-const Lukso = ({ onConnectionChange, setConnectionData }) => {
-  // Define the Lukso wallet module
-  const [userAddress, setUserAddress] = useState(null);
+const ConnectUP = ({ onConnectionChange }) => {
+  const { setConnectionData, userAddress } = useWeb3(); // Use the useWeb3 hook to get the context values
   const [isConnected, setIsConnected] = useState(false);
+
   const lukso = {
     injectedNamespace: "lukso",
     label: "Universal Profiles",
@@ -101,39 +102,39 @@ const Lukso = ({ onConnectionChange, setConnectionData }) => {
   });
 }, []); // Pass an empty dependency array to ensure it's created once
 
-  // Connect the wallet
-  const connectWallet = async () => {
-    try {
-      const connectedWallets = await onboard.connectWallet();
-      console.log('Connected wallets:', connectedWallets);
-      console.log('user address:', connectedWallets[0]?.accounts[0]?.address);
-      const address = connectedWallets[0]?.accounts[0]?.address;
+// Connect the wallet
+const connectWallet = async () => {
+  try {
+    const connectedWallets = await onboard.connectWallet();
+    console.log('Connected wallets:', connectedWallets);
+    console.log('user address:', connectedWallets[0]?.accounts[0]?.address);
+    const address = connectedWallets[0]?.accounts[0]?.address;
+
+    // Check for the 'Universal Profiles' wallet by label
+    onConnectionChange(
+      connectedWallets.some(wallet => wallet.label === 'Universal Profiles'),
+      address
+    );
   
-      // Check for the 'Universal Profiles' wallet by label
-      onConnectionChange(
-        connectedWallets.some(wallet => wallet.label === 'Universal Profiles'),
-        address
-      );
-  
-      // If the userAddress is available, call fetchProfileFromBackend
-      if (address) {
-        setIsConnected(true);
-        setConnectionData((prevData) => ({
-          ...prevData,
-          userAddress: address,
-        }));
-        await fetchProfileFromBackend(address);
-      }
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-    }
-  };
+ // If the userAddress is available, call fetchProfileFromBackend
+ if (address) {
+  setIsConnected(true);
+  setConnectionData((prevData) => ({
+    ...prevData,
+    userAddress: address,
+  }));
+  await fetchProfileFromBackend(address);
+}
+} catch (error) {
+console.error('Error connecting wallet:', error);
+}
+};
   
  
-  const getUserAddress = () => {
-    console.log("userAddress:", userAddress);
-    return userAddress;
-  };
+  // const getUserAddress = () => {
+  //   console.log("userAddress:", userAddress);
+  //   return userAddress;
+  // };
 
   return (
     <div>
@@ -144,5 +145,5 @@ const Lukso = ({ onConnectionChange, setConnectionData }) => {
   );
 };
 
-export { Lukso };
+export { ConnectUP };
 
