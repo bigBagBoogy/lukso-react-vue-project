@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './assets/logo.svg';
 import logo1 from './assets/logo-shine.svg';
-import { ConnectUP } from './connect.jsx';
+import { useWeb3 } from './Web3Context';
 import { Link } from 'react-router-dom'
 import { FetchAssetData } from './fetchassetData.jsx';
 import { FetchAssets } from './fetchassets.jsx';
@@ -11,30 +11,29 @@ import { FetchAndReadAssetData } from './fetchAndReadAssetData.jsx';
 import { LSP3MetadataForm } from './LSP3FEmetaDataFormFE.jsx';
 import { CheckUPConnection } from './checkUPConnection'; 
 // import { FetchProfile } from './fetch-profile.jsx';
+const App = () => {
+  const { isConnected, userAddress, onboard, onboardLoading } = useWeb3();
+  console.log("isConnected, userAddress", isConnected, userAddress);
 
+  const [showForm, setShowForm] = useState(false);
 
+  const handleButtonClick = () => {
+    setShowForm(!showForm);
+  };
 
-  function App() {
-    const [connectionData, setConnectionData] = useState({
-      isConnected: false,
-      userAddress: null,
-    });
-    const [showForm, setShowForm] = useState(false);
+  const handleConnectButtonClick = async () => {
+    try {
+      if (!onboardLoading) {
+        await onboard.connectWallet();
+        // Additional logic after successful wallet connection
+      } else {
+        console.log('Onboard is still loading. Please wait.');
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
+  };
 
-    const handleButtonClick = () => {
-      setShowForm(!showForm);
-    };
-  
-    // Callback function to update the connection status and user address  
-const setIsConnected = (status, userAddress) => {
-  console.log('Connection Status:', status);
-  console.log('User Address:', userAddress);
-  setConnectionData((prevData) => ({
-    ...prevData,
-    isConnected: status,
-    userAddress: userAddress,
-  }));
-};
     const handleSubmit = (lsp3Profile) => {
       // This function will be called when the form is submitted in LSP3MetadataForm
       // You can handle the lsp3Profile object here, e.g., send it to the backend.
@@ -42,7 +41,8 @@ const setIsConnected = (status, userAddress) => {
     };
 
   return (
-    <>
+    <> 
+        <button onClick={handleConnectButtonClick}>Connect Wallet</button>
         <h1>Lukso Dapp</h1>      
         <div className="parent-container">   
         <img src={logo1} className="logo1" alt="logo1" />  
@@ -50,15 +50,7 @@ const setIsConnected = (status, userAddress) => {
         </div>
         {/* only show the form onClick */}
         <button onClick={handleButtonClick}>Create Universal Group</button>
-        {showForm && <LSP3MetadataForm onSubmit={handleSubmit} />} 
-        {/* if connected, show the "go group page button" */}
-        <ConnectUP
-        onConnectionChange={(status, userAddress) => setIsConnected(status, userAddress)}
-        setConnectionData={setConnectionData}
-      />        
-        {connectionData.isConnected && (
-        <Link to="/UniversalGroup">Go to Group Page</Link>
-      )}
+        {showForm && <LSP3MetadataForm onSubmit={handleSubmit} />}      
     </>
   );
 }
